@@ -1,0 +1,63 @@
+[
+    {
+        "Linux": "Ubuntu 18.04",
+        "MasterSupported": true,
+        "Recommended": false,
+        "RequiresArchitecture": [
+            "x64",
+            "x86_64",
+            "amd64"
+        ],
+        "Packages": [
+            "git-core",
+            "gnupg",
+            "flex",
+            "bison",
+            "build-essential",
+            "zip",
+            "curl",
+            "zlib1g-dev",
+            "gcc-multilib",
+            "g++-multilib",
+            "libc6-dev-i386",
+            "libncurses5",
+            "lib32ncurses5-dev",
+            "x11proto-core-dev",
+            "libx11-dev",
+            "lib32z1-dev",
+            "libgl1-mesa-dev",
+            "libxml2-utils",
+            "xsltproc",
+            "unzip",
+            "fontconfig"
+        ]
+    },
+    {
+        "Linux": "Ubuntu 14.04",
+        "MasterSupported": true,
+        "Recommended": true,
+        "Packages": [
+            "git-core",
+            "gnupg",
+            "flex",
+            "bison",
+            "gperf",
+            "build-essential",
+            "zip",
+            "curl",
+            "zlib1g-dev",
+            "gcc-multilib",
+            "g++-multilib",
+            "libc6-dev-i386",
+            "libncurses5",
+            "lib32ncurses5-dev",
+            "x11proto-core-dev",
+            "libx11-dev",
+            "lib32z-dev",
+            "libgl1-mesa-dev",
+            "libxml2-utils",
+            "xsltproc",
+            "unzip"
+        ]
+    }
+]

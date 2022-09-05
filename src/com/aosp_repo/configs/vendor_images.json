@@ -1,0 +1,106 @@
+[
+    {
+        "Device": "Pixel 5a (5G)",
+        "Codename": "barbet",
+        "ImageFiles": [
+            {
+                "Type": "VendorImage",
+                "URL": "https://dl.google.com/dl/android/aosp/google_devices-barbet-8747182-df2512d2.tgz"
+            },
+            {
+                "Type": "HardwareImage",
+                "URL": "https://dl.google.com/dl/android/aosp/qcom-barbet-8747182-6bcc451d.tgz"
+            }
+        ]
+    },
+    {
+        "Device": "Pixel 4a (5G)",
+        "Codename": "bramble",
+        "ImageFiles": [
+            {
+                "Type": "VendorImage",
+                "URL": "https://dl.google.com/dl/android/aosp/google_devices-bramble-8747182-68cee5b9.tgz"
+            },
+            {
+                "Type": "HardwareImage",
+                "URL": "https://dl.google.com/dl/android/aosp/qcom-bramble-8747182-0807e387.tgz"
+            }
+        ]
+    },
+    {
+        "Device": "Pixel 4 XL",
+        "Codename": "coral",
+        "ImageFiles": [
+            {
+                "Type": "VendorImage",
+                "URL": "https://dl.google.com/dl/android/aosp/google_devices-coral-8747182-a5f1140d.tgz"
+            },
+            {
+                "Type": "HardwareImage",
+                "URL": "https://dl.google.com/dl/android/aosp/qcom-coral-8747182-91bd6f88.tgz"
+            }
+        ]
+    },
+    {
+        "Device": "Pixel 4",
+        "Codename": "flame",
+        "ImageFiles": [
+            {
+                "Type": "VendorImage",
+                "URL": "https://dl.google.com/dl/android/aosp/google_devices-flame-8747182-161d2fe6.tgz"
+            },
+            {
+                "Type": "HardwareImage",
+                "URL": "https://dl.google.com/dl/android/aosp/qcom-flame-8747182-364c16cd.tgz"
+            }
+        ]
+    },
+    {
+        "Device": "Pixel 6",
+        "Codename": "oriole",
+        "ImageFiles": [
+            {
+                "Type": "VendorImage",
+                "URL": "https://dl.google.com/dl/android/aosp/google_devices-oriole-8747182-a3d2de82.tgz"
+            }
+        ]
+    },
+    {
+        "Device": "Pixel 6 Pro",
+        "Codename": "raven",
+        "ImageFiles": [
+            {
+                "Type": "VendorImage",
+                "URL": "https://dl.google.com/dl/android/aosp/google_devices-raven-8747182-2ac04c5c.tgz"
+            }
+        ]
+    },
+    {
+        "Device": "Pixel 5",
+        "Codename": "redfin",
+        "ImageFiles": [
+            {
+                "Type": "VendorImage",
+                "URL": "https://dl.google.com/dl/android/aosp/google_devices-redfin-8747182-5cb8c286.tgz"
+            },
+            {
+                "Type": "HardwareImage",
+                "URL": "https://dl.google.com/dl/android/aosp/qcom-redfin-8747182-67136704.tgz"
+            }
+        ]
+    },
+    {
+        "Device": "Pixel 4a",
+        "Codename": "sunfish",
+        "ImageFiles": [
+            {
+                "Type": "VendorImage",
+                "URL": "https://dl.google.com/dl/android/aosp/google_devices-sunfish-8747182-d6e8a660.tgz"
+            },
+            {
+                "Type": "HardwareImage",
+                "URL": "https://dl.google.com/dl/android/aosp/qcom-sunfish-8747182-2505da31.tgz"
+            }
+        ]
+    }
+]
