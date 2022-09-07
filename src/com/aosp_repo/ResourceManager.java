@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.URL;
 import java.nio.file.AccessDeniedException;
 import java.util.Objects;
 
@@ -15,6 +16,10 @@ public class ResourceManager {
 
     public static String getPath(String resPath) {
         return Objects.requireNonNull(ResourceManager.class.getResource(resPath)).getPath();
+    }
+
+    public static URL getResourceUrl(String resPath) {
+        return ResourceManager.class.getResource(resPath);
     }
 
     public static InputStream openStream(String resPath) {

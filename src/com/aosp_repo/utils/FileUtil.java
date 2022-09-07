@@ -3,30 +3,79 @@ package com.aosp_repo.utils;
 import java.io.*;
 import java.nio.file.AccessDeniedException;
 import java.nio.file.FileAlreadyExistsException;
-import java.nio.file.Files;
-import java.nio.file.attribute.BasicFileAttributes;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 public class FileUtil {
-
-    public static final File USER_DIR = new File(System.getProperty("user.dir"));
 
     public static boolean exists(String path) {
         return new File(path).exists();
     }
 
-    public static String readFile(String filePath) throws IOException {
+    public static void createFile(String filePath, boolean createDirs) throws IOException {
+        File file = new File(filePath);
+        File dirs = new File(filePath.substring(0, Utility.getLastPathSeparator(filePath, false)));
+
+        if (!dirs.exists()) {
+            if (createDirs)
+                createDirectory(dirs.getPath());
+            else
+                throw new FileNotFoundException("No directories at \"" + dirs.getPath() + "\" " +
+                        "were found");
+        }
+
+        if (!file.createNewFile())
+            throw new IOException("File at \"" + filePath + "\" could not be created");
+    }
+
+    public static void createDirectory(String path) throws IOException {
+        File dir = new File(path.substring(0, Utility.getLastPathSeparator(path, true)));
+
+        if (dir.exists()) {
+            if (dir.isFile())
+                throw new FileAlreadyExistsException("File at \"" + path + "\" already exists");
+            else
+                throw new FileAlreadyExistsException("Directory at \"" + path + "\" already exists");
+        }
+
+        if (!dir.mkdirs())
+            throw new IOException("Could not create new directories at \"" + path + "\"");
+    }
+
+    public static void write(String filePath, char[] contents) throws IOException {
         File file = new File(filePath);
 
         if (!file.exists())
-            throw new FileNotFoundException("The file \"" + filePath + "\" does not exist");
+            createFile(filePath, true);
+
+        if (!file.canWrite())
+            throw new AccessDeniedException("The current user \"" + System.getProperty("user.name") + "\" does" +
+                    " not have access to \"" + filePath + "\"");
 
         if (file.isDirectory())
-            throw new IllegalStateException("The current path assigned to \"" + filePath + "\" is a directory!");
+            throw new IllegalStateException("\"" + filePath + "\" is a directory");
+
+        FileOutputStream fos = new FileOutputStream(file, false);
+
+        for (char c : contents)
+            fos.write(c);
+
+        fos.close();
+    }
+
+    public static char[] read(String filePath) throws IOException {
+        File file = new File(filePath);
+
+        if (!file.exists())
+            throw new FileNotFoundException("File \"" + filePath + "\" not found");
 
         if (!file.canRead())
-            throw new AccessDeniedException("\"" + filePath + "\" is a read-protected file or the current user does not have access to it");
+            throw new AccessDeniedException("The current user \"" + System.getProperty("user.name") + "\" " +
+                    "does not have access to \"" + filePath + "\"");
+
+        if (file.isDirectory())
+            throw new IllegalStateException("\"" + filePath + "\" is a directory");
 
         FileInputStream fis = new FileInputStream(file);
         StringBuilder str = new StringBuilder();
@@ -36,129 +85,208 @@ public class FileUtil {
             str.append((char) data);
 
         fis.close();
-        return str.toString();
+        return str.toString().toCharArray();
     }
 
-    public static void writeFile(String filePath, String contents) throws IOException {
-        File file = new File(filePath);
-
-        if (file.exists() && file.isDirectory())
-            throw new IllegalStateException("The current path assigned to \"" + filePath + "\" is a directory");
-
-        if (file.exists() && !file.canWrite())
-            throw new AccessDeniedException("\"" + filePath + "\" is a write-protected file or the current user does not have access to it");
-
-        if (!file.canWrite())
-            throw new AccessDeniedException("The current directory/file is a write-protected file or the current user does not have access to it");
-
-        FileWriter writer = new FileWriter(filePath, false);
-        writer.write(contents);
-        writer.close();
+    public static String removePath(String path) {
+        return path.substring(Utility.getLastPathSeparator(path, false));
     }
 
-    public static int getLastSeparator(String path) {
-        int lastSep;
+    public static long getSize(String path) throws IOException {
+        File file = new File(path);
+        long size = 0;
 
-        if (path.contains("/") && path.contains("\\")) {
-            path = path.replaceAll("\\\\", "/");
-            lastSep = path.lastIndexOf('/');
-        } else if (path.contains("\\"))
-            lastSep = path.lastIndexOf('\\');
-        else
-            lastSep = path.lastIndexOf('/');
+        if (!file.exists())
+            throw new FileNotFoundException("\"" + path + "\" does not exist");
 
-        if (path.substring(0, lastSep + 1).length() != 0)
-            lastSep = path.length() - 1;
+        if (file.isFile())
+            size += file.length();
 
-        return lastSep;
+        if (file.isDirectory()) {
+            for (String item : listDirectory(path, false, false)) {
+                File subFile = new File(item);
+
+                if (subFile.isFile())
+                    size += subFile.length();
+
+                if (subFile.isDirectory()) {
+                    size += subFile.length();
+                    size += getSize(subFile.getPath());
+                }
+            }
+        }
+
+        return size;
     }
 
-    public static List<String> listDirectory(String dirPath) throws IOException {
+    public static List<String> scanForSpecifiedName(String path, String name, boolean excludeAddingFolders) throws IOException {
+        List<String> results = new ArrayList<>();
+        File root = new File(path);
+
+        if (root.isFile()) {
+            if (path.contains(name))
+                results.add(path);
+
+            return results;
+        }
+
+        List<String> data = listDirectory(path, true, false);
+
+        for (String item : data) {
+            File file = new File(item);
+
+            if (excludeAddingFolders) {
+                if (file.getPath().contains(name) && file.isFile())
+                    results.add(file.getPath());
+            } else {
+                if (file.getPath().contains(name))
+                    results.add(file.getPath());
+            }
+
+            if (file.isDirectory())
+                results.addAll(scanForSpecifiedName(item, name, excludeAddingFolders));
+        }
+
+        return results;
+    }
+
+    public static boolean isFile(String path) {
+        File file = new File(path);
+
+        if (!file.exists())
+            return false;
+
+        return file.isFile();
+    }
+
+    public static boolean isDirectory(String path) {
+        File file = new File(path);
+
+        if (!file.exists())
+            return false;
+
+        return file.isDirectory();
+    }
+
+    public static List<String> listDirectory(String path, boolean sortNames, boolean removePaths) throws IOException {
         List<String> data = new ArrayList<>();
-        File dir = new File(dirPath);
+        File fileData = new File(path);
 
-        if (!dir.exists())
-            throw new FileNotFoundException("The current directory at \"" + dirPath + "\" does not exist");
+        if (!fileData.exists())
+            throw new FileNotFoundException("\"" + path + "\" not found");
 
-        if (dir.isFile()) {
-            data.add(dirPath);
+        if (!fileData.canRead())
+            throw new AccessDeniedException("Access to user \"" + RuntimeEnvironment.USER_NAME + "\" " +
+                    "was not given to \"" + path + "\"");
+
+        if (fileData.isFile()) {
+            data.add(path);
+
+            if (removePaths)
+                data.set(0, removePath(data.get(0)));
+
             return data;
         }
 
-        if (!dir.canRead())
-            throw new AccessDeniedException("The current directory/file is a read-protected place or the current user does not have access to it");
-
-        File[] files = dir.listFiles();
+        File[] files = fileData.listFiles();
         if (files == null)
             return data;
 
         for (File file : files)
             data.add(file.getPath());
 
+        if (removePaths) {
+            if (data.size() != 0)
+                data.replaceAll(FileUtil::removePath);
+        }
+
+        if (sortNames) {
+            if (data.size() != 0)
+                Collections.sort(data);
+        }
+
         return data;
     }
 
+    public static void copyFile(String inFilePath, String outFilePath) throws IOException {
+        File inFile = new File(inFilePath);
+        File outFile = new File(outFilePath);
+
+        if (!inFile.exists())
+            throw new FileNotFoundException("File \"" + inFilePath + "\" not found");
+
+        if (!inFile.canRead())
+            throw new AccessDeniedException("The current user \"" + System.getProperty("user.name") + "\" " +
+                    "does not have access to \"" + inFilePath + "\"");
+
+        if (inFile.isDirectory())
+            throw new IllegalStateException("\"" + inFilePath + "\" is a directory");
+
+        if (!outFile.exists())
+            createFile(outFilePath, true);
+
+        if (!outFile.canWrite())
+            throw new AccessDeniedException("The current user does not have access to \"" + outFilePath + "\"");
+
+        if (outFile.isDirectory())
+            throw new IllegalStateException("\"" + outFilePath + "\" is a directory");
+
+        FileInputStream fis = new FileInputStream(inFile);
+        FileOutputStream fos = new FileOutputStream(outFile, false);
+
+        int data;
+        while ((data = fis.read()) != -1)
+            fos.write(data);
+
+        fis.close();
+        fos.close();
+    }
+
+    public static void moveFile(String inFilePath, String outFilePath) throws IOException {
+        copyFile(inFilePath, outFilePath);
+        delete(inFilePath);
+    }
+
     public static void delete(String path) throws IOException {
-        File f = new File(path);
+        File data = new File(path);
 
-        if (!f.exists())
-            return;
+        if (!data.exists())
+            throw new IOException("File or directory at \"" + path + "\" does not exist");
 
-        if (f.isFile()) {
-            if (!f.delete())
+        if (data.isFile()) {
+            if (!data.delete())
                 throw new IOException("Could not delete \"" + path + "\"");
 
             return;
         }
 
-        if (listDirectory(path).size() == 0) {
-            if (!f.delete())
+        if (listDirectory(path, false, false).size() == 0) {
+            if (!data.delete())
                 throw new IOException("Could not delete \"" + path + "\"");
 
             return;
         }
 
-        File[] files = f.listFiles();
-        if (files == null)
+        File[] files = data.listFiles();
+        if (files == null) {
+            if (!data.delete())
+                throw new IOException("Could not delete \"" + path + "\"");
+
             return;
+        }
 
         for (File file : files) {
-            BasicFileAttributes fileAttr = Files.readAttributes(file.toPath(), BasicFileAttributes.class);
-            if (fileAttr.isRegularFile()) {
-                if (file.delete())
+            if (file.isFile()) {
+                if (!file.delete())
                     throw new IOException("Could not delete \"" + file.getPath() + "\"");
             }
 
-            if (fileAttr.isSymbolicLink()) {
-                if (file.delete())
-                    throw new IOException("Could not delete \"" + file.getPath() + "\"");
-            }
-
-            if (fileAttr.isDirectory())
+            if (file.isDirectory())
                 delete(file.getPath());
         }
 
-        if (!f.delete())
+        if (!data.delete())
             throw new IOException("Could not delete \"" + path + "\"");
     }
 
-    public static void mkdirs(String path) throws IOException {
-        File dir = new File(path.substring(0, getLastSeparator(path) + 1));
-
-        if (dir.exists())
-            throw new FileAlreadyExistsException("\"" + path + "\" already exists");
-
-        if (!dir.mkdirs())
-            throw new IOException("Could not make new folders at \"" + path + "\"");
-    }
-
-    public static void rewrite(String oldLine, String newLine, File file) throws IOException {
-        if (!file.exists())
-            throw new FileNotFoundException("File at \"" + file.getPath() + "\" not found");
-
-        if (file.isDirectory())
-            throw new IllegalStateException("\"" + file.getPath() + "\" is a directory");
-
-        writeFile(file.getPath(), readFile(file.getPath()).replace(oldLine, newLine));
-    }
 }
