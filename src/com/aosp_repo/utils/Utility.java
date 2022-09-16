@@ -91,4 +91,19 @@ public class Utility {
 
         return str.substring(0, str.toString().length() - spliterator.length());
     }
+
+    public static String removeStartSpaces(String string) {
+        String results = string;
+
+        if (results.startsWith(" "))
+            results = results.replaceFirst(" ", "");
+
+        if (results.startsWith("\t"))
+            results = results.replaceFirst("\t", "");
+
+        if (results.startsWith(" ") || results.startsWith("\t"))
+            removeStartSpaces(results);
+
+        return results;
+    }
 }

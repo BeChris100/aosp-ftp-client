@@ -3,27 +3,12 @@ package com.aosp_repo.cfg;
 import com.aosp_repo.ResourceManager;
 import com.aosp_repo.utils.Utility;
 
-import java.io.IOException;
-import java.io.InputStream;
+import java.io.*;
+import java.nio.file.AccessDeniedException;
 import java.util.ArrayList;
 import java.util.List;
 
 public class ConfigParser {
-
-    private static String removeStartSpaces(String line) {
-        String results = line;
-
-        if (results.startsWith(" "))
-            results = results.replaceFirst(" ", "");
-
-        if (results.startsWith("\t"))
-            results = results.replaceFirst("\t", "");
-
-        if (results.startsWith(" ") || results.startsWith("\t"))
-            removeStartSpaces(results);
-
-        return results;
-    }
 
     public static List<Configuration> loadFromResource(String resourceFile) throws IOException {
         InputStream is = ResourceManager.openStream(resourceFile);
@@ -44,13 +29,65 @@ public class ConfigParser {
             if (line.isEmpty())
                 continue;
 
+            if (line.startsWith(" ") || line.startsWith("\t"))
+                line = Utility.removeStartSpaces(line);
+
             if (line.startsWith("#"))
                 continue;
 
             String[] opts;
 
             if (line.startsWith(" ") || line.startsWith("\t")) {
-                String overwrittenLine = removeStartSpaces(line);
+                String overwrittenLine = Utility.removeStartSpaces(line);
+                opts = overwrittenLine.split(" = ", 2);
+            } else
+                opts = line.split(" = ", 2);
+
+            Configuration config = new Configuration(opts[0], opts[1]);
+            results.add(config);
+        }
+
+        return results;
+    }
+
+    public static List<Configuration> loadFromFile(File file) throws IOException {
+        if (!file.exists())
+            throw new FileNotFoundException("File at \"" + file.getPath() + "\" not found");
+
+        if (!file.canRead())
+            throw new AccessDeniedException("Current user cannot access \"" + file.getPath() + "\"");
+
+        if (file.isDirectory())
+            throw new IllegalStateException("\"" + file.getPath() + "\" is a directory");
+
+        FileInputStream fis = new FileInputStream(file);
+        StringBuilder str = new StringBuilder();
+        int data;
+
+        while ((data = fis.read()) != -1)
+            str.append((char) data);
+
+        fis.close();
+
+        String contents = str.toString();
+        String[] lines = contents.split(Utility.getLineSeparator(contents));
+
+        List<Configuration> results = new ArrayList<>();
+
+        for (String line : lines) {
+            if (line.isEmpty())
+                continue;
+
+            if (line.startsWith(" ") || line.startsWith("\t"))
+                line = Utility.removeStartSpaces(line);
+
+            if (line.startsWith("#"))
+                continue;
+
+            String[] opts;
+
+            if (line.startsWith(" ") || line.startsWith("\t")) {
+                String overwrittenLine = Utility.removeStartSpaces(line);
                 opts = overwrittenLine.split(" = ", 2);
             } else
                 opts = line.split(" = ", 2);

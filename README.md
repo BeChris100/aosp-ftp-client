@@ -27,7 +27,7 @@ $ java -jar repo-client.jar --device-set [Codename:sunfish]
 ## Credential Initialization
 You can obtain a blank `credentials.cfg` file by running this following command:
 ```
-$ java -jar repo-client.jar --obtain credentials
+$ java -jar repo-client.jar --credentials
 What is the username to the FTP Server? > [Username prompt]
 What is the password to the FTP Server? > [Password prompt]
 

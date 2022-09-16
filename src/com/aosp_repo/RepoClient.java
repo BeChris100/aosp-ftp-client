@@ -14,14 +14,14 @@ public class RepoClient {
 
     public static void initialize() throws IOException {
         System.out.println("Copying out \"configs/aosp.cfg\" to \".client/aosp.cfg\"");
-        ResourceManager.copyOut("res/configs/aosp.cfg", new File(RuntimeEnvironment.USER_HOME.getPath() + "/.client/aosp.cfg"));
+        ResourceManager.copyOut("res/configs/aosp.cfg", new File(RuntimeEnvironment.WORKING_DIRECTORY.getPath() + "/.client/aosp.cfg"));
 
-        if (new File(RuntimeEnvironment.USER_HOME.getPath() + "/credentials.cfg").exists()) {
-            System.out.println("Moving \"" + RuntimeEnvironment.USER_HOME.getPath() + "/credentials.cfg\" to the client folder");
-            FileUtil.moveFile(RuntimeEnvironment.USER_HOME.getPath() + "/credentials.cfg", RuntimeEnvironment.USER_HOME.getPath() + "/.client/credentials.cfg");
+        if (new File(RuntimeEnvironment.WORKING_DIRECTORY.getPath() + "/credentials.cfg").exists()) {
+            System.out.println("Moving \"" + RuntimeEnvironment.WORKING_DIRECTORY.getPath() + "/credentials.cfg\" to the client folder");
+            FileUtil.moveFile(RuntimeEnvironment.WORKING_DIRECTORY.getPath() + "/credentials.cfg", RuntimeEnvironment.WORKING_DIRECTORY.getPath() + "/.client/credentials.cfg");
         } else {
             System.out.println("Copying out \"configs/credentials.cfg\" to \"client/credentials.cfg\"");
-            ResourceManager.copyOut("res/configs/credentials.cfg", new File(RuntimeEnvironment.USER_HOME.getPath() + "/.client/credentials.cfg"));
+            ResourceManager.copyOut("res/configs/credentials.cfg", new File(RuntimeEnvironment.WORKING_DIRECTORY.getPath() + "/.client/credentials.cfg"));
         }
 
         System.out.println("Repo Client initialized successfully!");
