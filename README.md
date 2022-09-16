@@ -45,3 +45,7 @@ For now, I will be working on the FTP Client, but as Skill and Time progresses, 
 of initializing and downloading the Source Code from GitHub (as most AOSP source code are stored in GitHub). It
 will not read any JSON or XML files, as parsing them might not be the job for me, but if someone is willing to make
 an XML/JSON Parser, I'm all open.
+
+## Additional Information
+Please reach out to me if someone is willing to test this out on their FTP servers since I don't have one to
+this day.
