@@ -3,6 +3,7 @@ package com.aosp_repo;
 import com.aosp_repo.utils.FileUtil;
 import com.aosp_repo.utils.RuntimeEnvironment;
 import com.aosp_repo.utils.Utility;
+import org.apache.commons.net.ftp.FTPFile;
 
 import java.io.IOException;
 
@@ -12,10 +13,12 @@ public class MainClass {
         System.out.println("AOSP Repo Client (version 1.0)");
         System.out.println();
         System.out.println("Commands:");
-        System.out.println("--init\t\t\t\t\t\t\t\t\t\tInitializes an empty AOSP Configuration for this client");
-        System.out.println("--device-add Brand Codename\t\t\t\t\tAdds a new device to your AOSP Build");
-        System.out.println("--device-sync Brand Codename\t\t\t\tDownloads the files to the current working directory");
-        System.out.println("--device-set Brand Codename\t\t\t\t\tApplies a device to the \"vendor\" folder");
+        System.out.println("--init                                  Initializes an empty AOSP Configuration for this client");
+        System.out.println("--device-add Brand Codename             Adds a new device to your AOSP Build");
+        System.out.println("--device-sync Brand Codename            Downloads the files to the current working directory");
+        System.out.println("--device-set Brand Codename             Applies a device to the \"vendor\" folder");
+        System.out.println("--device-remove Brand Codename          Removes the device from the client configuration and possibly removing the Vendor Folder.");
+        System.out.println("--get-code / -gC                        Downloads the AOSP Source Code from the FTP Server");
     }
 
     public static void main(String[] args) {
@@ -44,10 +47,17 @@ public class MainClass {
                         e.printStackTrace();
                     }
                 }
+                case "--device-remove" -> {
+                    if (args.length != 3) {
+                        System.err.println("Usage:");
+                        System.err.println("");
+                    }
+                }
                 case "--help", "-h" -> printHelp();
                 default -> {
                     System.err.println("Unknown Command!");
                     System.err.println("Command provided: " + Utility.fromArray(args, " "));
+                    System.exit(1);
                 }
             }
         } else

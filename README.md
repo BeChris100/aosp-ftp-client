@@ -6,11 +6,9 @@ I won't go into detail about building the AOSP with their repo client. For full 
 their detailed [Website](https://source.android.com/docs/setup/start) on building the AOSP.
 
 ## Client-side Build
-This client will automatically install the missing packages using the APT (Advanced (not really)
-Package Tool) if there are any. In case the packages have been already installed, it is recommended
-that you do the updates via your Terminal of choice using `sudo apt full-upgrade`. Double check,
-what packages are being upgraded in case of kernel or linux image upgrade. If there are any kernel
-or linux image upgrade, it is recommended to restart your computer to refresh your drivers.
+Download the required packages. Since it is meant to be written on all platforms (Debian (Ubuntu), Arch etc.), you
+are required to install them manually using the package manager of the System Choice. On Debian-based systems, the
+package manager is `apt`, Arch-based includes `pacman` and the list goes on.
 
 After that, find an FTP server or host one and save the credentials in the AOSP Root as `credentials.cfg`. In there,
 you need to link the Username, Password, URL and the Root Directory of the AOSP Root Directory. See the format in
@@ -21,8 +19,29 @@ When the FTP Credentials File has been configured properly, look for your device
 and start a Linux Terminal and type these commands:
 ```
 ## If not done yet
-$ chmod +x ftp_client.sh
-$ java -jar AospFtpClient.jar --init $(cat credentials.cfg)
-$ java -jar AospFtpClient.jar --device-add [Brand:google] [Codename:sunfish]
-$ java -jar AospFtpClient.jar --device-set [Codename:sunfish]
+$ java -jar repo-client.jar --init
+$ java -jar repo-client.jar --device-add [Brand:google] [Codename:sunfish]
+$ java -jar repo-client.jar --device-set [Codename:sunfish]
 ```
+
+## Credential Initialization
+You can obtain a blank `credentials.cfg` file by running this following command:
+```
+$ java -jar repo-client.jar --obtain credentials
+What is the username to the FTP Server? > [Username prompt]
+What is the password to the FTP Server? > [Password prompt]
+
+Connection to the FTP Server (URL Address)
+> [FTP URL Server Prompt]
+
+Root Directory to the AOSP Source Code (enter '.' if it is in the root directory)
+> [Directory Prompt]
+```
+After executing the command and filling out the fields, your file will be stored in the
+`(AOSP Directory)/.ftp-client/credentials.cfg`, sitting and waiting for any code download.
+
+## Build Information
+For now, I will be working on the FTP Client, but as Skill and Time progresses, I will introduce the default way
+of initializing and downloading the Source Code from GitHub (as most AOSP source code are stored in GitHub). It
+will not read any JSON or XML files, as parsing them might not be the job for me, but if someone is willing to make
+an XML/JSON Parser, I'm all open.
