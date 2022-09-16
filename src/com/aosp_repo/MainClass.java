@@ -50,7 +50,8 @@ public class MainClass {
                 case "--device-remove" -> {
                     if (args.length != 3) {
                         System.err.println("Usage:");
-                        System.err.println("");
+                        System.err.println("java -jar repo-client.jar --device-remove [Brand] [Codename]");
+                        System.exit(1);
                     }
                 }
                 case "--help", "-h" -> printHelp();
