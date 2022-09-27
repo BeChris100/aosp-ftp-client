@@ -10,9 +10,7 @@ import com.aosp_repo.utils.RuntimeEnvironment;
 import com.aosp_repo.utils.io.FileUtil;
 import org.jetbrains.annotations.NotNull;
 
-import java.io.File;
-import java.io.IOException;
-import java.io.InputStream;
+import java.io.*;
 import java.util.List;
 import java.util.Scanner;
 
@@ -48,7 +46,7 @@ public class MainClass {
     };
 
     private static void printHelp() {
-        System.out.println("AOSP Repo Client (version 1.0)");
+        System.out.println("AOSP Repo Client (version " + RepoClient.Build.VERSION_CODE + ")");
         System.out.println();
         System.out.println("Commands:");
         System.out.println("--init / -i                                            Initializes an empty AOSP Configuration for this client");
@@ -126,7 +124,15 @@ public class MainClass {
                         System.out.println();
                     }
                 } catch (Exception e) {
-                    e.printStackTrace();
+                    StringWriter sw = new StringWriter();
+                    PrintWriter pw = new PrintWriter(sw);
+                    e.printStackTrace(pw);
+
+                    if (sw.toString().contains("UnknownHostException")) {
+                        System.err.println("Could not establish a valid connection to \"https://api.github.com\"");
+                        System.err.println("Check, if your Internet Connection is online and can receive GET-Requests");
+                    } else
+                        e.printStackTrace();
                 }
             }
             case "--device-add", "-dA" -> {

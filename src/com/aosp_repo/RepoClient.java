@@ -21,7 +21,7 @@ public class RepoClient {
         }
 
         public static final BuildType BUILD_TYPE = BuildType.DEVELOPMENT;
-        public static final String VERSION_CODE = "1.0";
+        public static final String VERSION_CODE = "1.0.0-1";
         public static final boolean RELEASE_PACKAGE = false;
 
     }
