@@ -49,11 +49,42 @@ public class MainClass {
                         e.printStackTrace();
                     }
                 }
+                case "--device-add-local" -> {
+                    if (args.length != 2) {
+                        System.err.println("Usage:");
+                        System.err.println("java -jar AospRepoClient.jar --device-add-local [ConfigFile]");
+                        System.exit(1);
+                    }
+
+                    // TODO: Implement args[0] Option to add device configuration files
+                }
                 case "--device-remove" -> {
                     if (args.length != 3) {
                         System.err.println("Usage:");
                         System.err.println("java -jar repo-client.jar --device-remove [Brand] [Codename]");
                         System.exit(1);
+                        return;
+                    }
+
+                    try {
+                        if (FileUtil.exists(RuntimeEnvironment.WORKING_DIRECTORY.getPath() + "/.client/devices/" + args[1] + "/" + args[2] + ".cfg"))
+                            FileUtil.delete(RuntimeEnvironment.WORKING_DIRECTORY.getPath() + "/.client/devices/" + args[1] + "/" + args[2] + ".cfg");
+
+                        if (FileUtil.exists(RuntimeEnvironment.WORKING_DIRECTORY.getPath() + "/.client/devices/" + args[1] + "/" + args[2] + "-images.zip"))
+                            FileUtil.delete(RuntimeEnvironment.WORKING_DIRECTORY.getPath() + "/.client/devices/" + args[1] + "/" + args[2] + "-images.zip");
+
+                        if (FileUtil.exists(RuntimeEnvironment.WORKING_DIRECTORY.getPath() + "/vendor/google_devices/" + args[2]))
+                            FileUtil.delete(RuntimeEnvironment.WORKING_DIRECTORY.getPath() + "/vendor/google_devices/" + args[2]);
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                }
+                case "--template" -> {
+                    if (args.length != 2) {
+                        System.err.println("Usage:");
+                        System.err.println("java -jar repo-client.jar --template [Template]|list");
+                        System.err.println();
+                        System.err.println("Copies over from ");
                     }
                 }
                 case "--get-code", "-gC" -> {
