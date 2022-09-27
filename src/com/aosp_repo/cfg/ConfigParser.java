@@ -99,4 +99,18 @@ public class ConfigParser {
         return results;
     }
 
+    public static String fromConfigurationList(List<Configuration> configurationList, String spliterator) {
+        if (configurationList == null)
+            throw new NullPointerException("Configuration List has been passed as null");
+
+        if (configurationList.size() == 0)
+            return "";
+
+        StringBuilder str = new StringBuilder();
+
+        for (Configuration cfg : configurationList)
+            str.append(cfg.name()).append(" = ").append(cfg.value()).append(spliterator);
+
+        return str.substring(0, str.toString().length() - spliterator.length());
+    }
 }

@@ -2,10 +2,8 @@ package com.aosp_repo.credentials;
 
 import com.aosp_repo.cfg.ConfigParser;
 import com.aosp_repo.cfg.Configuration;
-import com.aosp_repo.utils.Utility;
 
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.nio.file.AccessDeniedException;
@@ -44,12 +42,12 @@ public class CredentialsData {
         int port = 21;
 
         for (Configuration config : configs) {
-            switch (config.getName()) {
-                case "Username" -> username = config.getValue();
-                case "Password" -> password = config.getValue();
-                case "FtpUrlConnection" -> url = config.getValue();
-                case "Port" -> port = Integer.parseInt(config.getValue());
-                case "FtpAospRootDir" -> remoteAospDir = config.getValue();
+            switch (config.name()) {
+                case "Username" -> username = config.value();
+                case "Password" -> password = config.value();
+                case "FtpUrlConnection" -> url = config.value();
+                case "Port" -> port = Integer.parseInt(config.value());
+                case "FtpAospRootDir" -> remoteAospDir = config.value();
             }
         }
 

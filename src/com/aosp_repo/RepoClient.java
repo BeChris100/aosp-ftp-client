@@ -2,7 +2,7 @@ package com.aosp_repo;
 
 import com.aosp_repo.cfg.ConfigParser;
 import com.aosp_repo.cfg.Configuration;
-import com.aosp_repo.utils.FileUtil;
+import com.aosp_repo.utils.io.FileUtil;
 import com.aosp_repo.utils.RuntimeEnvironment;
 
 import java.io.File;
@@ -11,6 +11,20 @@ import java.util.List;
 import java.util.Scanner;
 
 public class RepoClient {
+
+    public static class Build {
+
+        public enum BuildType {
+            DEVELOPMENT,
+            RELEASE,
+            PRE_RELEASE
+        }
+
+        public static final BuildType BUILD_TYPE = BuildType.DEVELOPMENT;
+        public static final String VERSION_CODE = "1.0";
+        public static final boolean RELEASE_PACKAGE = false;
+
+    }
 
     public static void initialize() throws IOException {
         System.out.println("Copying out \"configs/aosp.cfg\" to \".client/aosp.cfg\"");
@@ -39,7 +53,7 @@ public class RepoClient {
 
         System.out.println("** Device Information **");
         for (Configuration cfg : configs)
-            System.out.println(cfg.getName() + ": " + cfg.getValue());
+            System.out.println(cfg.name() + ": " + cfg.value());
 
         Scanner sc = new Scanner(System.in);
         System.out.print("Are you sure that you want to include this device to your build? (Y/n) ");
@@ -51,5 +65,4 @@ public class RepoClient {
         } else
             System.exit(0);
     }
-
 }

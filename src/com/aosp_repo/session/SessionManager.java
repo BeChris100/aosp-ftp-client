@@ -2,9 +2,8 @@ package com.aosp_repo.session;
 
 import com.aosp_repo.cfg.ConfigParser;
 import com.aosp_repo.cfg.Configuration;
-import com.aosp_repo.credentials.Credentials;
 import com.aosp_repo.credentials.CredentialsData;
-import com.aosp_repo.utils.FileUtil;
+import com.aosp_repo.utils.io.FileUtil;
 import com.aosp_repo.utils.RuntimeEnvironment;
 
 import java.io.File;
@@ -46,13 +45,13 @@ public class SessionManager {
             List<Configuration> credentialsConfig = ConfigParser.loadFromFile(sessionFile);
 
             for (Configuration cfg : credentialsConfig) {
-                if (cfg.getName().equals("CredentialsData")) {
+                if (cfg.name().equals("CredentialsData")) {
                     if (appliedCredentialsData == null)
-                        appliedCredentialsData = CredentialsData.initializeFromFile(new File(cfg.getValue()));
+                        appliedCredentialsData = CredentialsData.initializeFromFile(new File(cfg.value()));
                 }
-                if (cfg.getName().equals("AospDir")) {
+                if (cfg.name().equals("AospDir")) {
                     if (appliedAospDir == null)
-                        appliedAospDir = new File(cfg.getValue());
+                        appliedAospDir = new File(cfg.value());
                 }
             }
 

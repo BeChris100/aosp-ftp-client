@@ -1,6 +1,6 @@
 package com.aosp_repo;
 
-import com.aosp_repo.utils.FileUtil;
+import com.aosp_repo.utils.io.FileUtil;
 
 import java.io.*;
 import java.net.URL;
